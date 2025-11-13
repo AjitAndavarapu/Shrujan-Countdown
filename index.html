@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHRUJAN '25 - Countdown</title>
+  <style>
+    :root {
+      --color-gold: #ffd700;
+      --color-text: #fff;
+      --font-serif: 'Georgia', serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      background-image: url('images/background.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center top;
+      background-attachment: fixed;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      color: var(--color-text);
+      transition: background-image 0.3s ease-in-out;
+    }
+
+    .countdown-page-wrapper {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .fest-header {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Logos */
+    .logo-left, .logo-right {
+      position: absolute;
+      top: 35px;
+      z-index: 10;
+      width: 150px;
+      max-width: 15vw;
+      transition: transform 0.3s ease-out;
+    }
+
+    .logo-left { left: 30px;  width: 120px;}
+    .logo-right { right: 30px; width: 200px; }
+
+    .logo-left img, .logo-right img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Top GIET Image */
+    .top-giet-image {
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 11;
+      width: 900px;
+      max-width: 70vw;
+      transition: transform 0.3s ease-out;
+    }
+
+    .top-giet-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* SHRUJAN Name Below */
+    .top-name-image {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      width: 500px;
+      max-width: 60vw;
+      transition: transform 0.3s ease-out;
+    }
+
+    .top-name-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Countdown Card Container */
+    .countdown-card-container {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15;
+      width: 400px;
+      max-width: 50vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .countdown-image {
+      width: 100%;
+      height: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .countdown-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Website Live Text */
+    .website-live {
+      position: absolute;
+      font-family: 'sports world', sans-serif;
+      top: 43%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--color-gold);
+      font-size: clamp(0.7em, 1.2vw, 0.9em);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: bold;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      animation: fadeIn 2s ease-in-out 1s forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* Countdown Overlay */
+    .countdown-overlay {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      display: flex;
+      gap: clamp(10px, 2vw, 20px);
+      align-items: center;
+      justify-content: center;
+      width: 90%;
+    }
+
+    .time-unit { text-align: center; font-family: 'Sports World'; }
+
+    .number {
+      display: block;
+      font-size: clamp(2.6em, 2vw, 1.5em);
+      font-weight: bold;
+      color: var(--color-gold);
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    .label {
+      display: block;
+      font-size: clamp(0.8em, 0.8vw, 0.6em);
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+
+    /* Bottom Decoration */
+    .bottom-image {
+      position: absolute;
+      bottom: -50px;
+      left: 0;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transition: transform 0.3s ease-out;
+    }
+
+    .bottom-image img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center bottom;
+    }
+
+    /* Tablet */
+    @media (max-width: 900px) {
+      .countdown-card-container { width: 55%; top: 280px; }
+      .logo-left, .logo-right { width: 80px; top: 20px; }
+      .top-giet-image { width: 220px; top: 20px; }
+      .top-name-image { width: 350px; top: 120px; }
+    }
+
+    /* MOBILE IMAGE SWITCHING + CENTERED LOGOS */
+    @media (max-width: 600px) {
+      body {
+        background-image: url('images/mobile/back mob.jpg');
+      }
+
+      /* CENTER THE TWO LOGOS SIDE BY SIDE */
+      .logo-left, .logo-right {
+        position: absolute !important;
+        top: 15px !important;
+        left: 50% !important;
+        right: auto !important;
+        width: 95px !important;
+        max-width: 100px !important;
+        z-index: 12;
+      }
+
+      .logo-left {
+        transform: translateX(calc(-100% - 5px)) !important;
+        width: 100px !important;
+
+      }
+
+      .logo-right {
+        transform: translateX(5px) !important;
+        padding-top: 6px;
+
+      }
+
+      .logo-left img {
+        content: url('images/mobile/logo header .png');
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      .logo-right img {
+        content: url('images/mobile/shrujan 3.0 copyhggg.png');
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      /* MUCH LARGER GIET IMAGE */
+      .top-giet-image {
+        width: 85vw !important;
+        max-width: 450px !important;
+        height: auto !important;
+        top: 90px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+      }
+
+      .top-giet-image img {
+        content: url('images/mobile/giet.png');
+        width: 140% !important;
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      /* SHRUJAN IMAGE */
+      .top-name-image {
+        width: 92vw !important;
+        max-width: 650px !important;
+        height: auto !important;
+        top: 150px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+      }
+
+      .top-name-image img {
+        content: url('images/mobile/shrujan mob.png');
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      /* Countdown Card on Mobile */
+      .countdown-card-container {
+        top: 160px !important;
+        width: 70vw !important;
+        max-width: 400px !important;
+      }
+
+      .website-live {
+        font-size: 0.65em !important;
+        top: 43% !important;
+      }
+
+      .number {
+        font-size: clamp(2em, 3.5vw, 1.3em) !important;
+        margin-top: 10px;
+      }
+
+      .label {
+        font-size: clamp(0.8em, 1.5vw, 0.55em) !important;
+      }
+
+      .bottom-image img {
+        content: url('images/mobile/mobile elem.png');
+      }
+
+      .bottom-image {
+        bottom: 0px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="countdown-page-wrapper">
+    <header class="fest-header">
+
+      <!-- Side Logos -->
+      <div class="logo-left">
+        <img src="images/logo header .png" alt="Left Logo">
+      </div>
+      <div class="logo-right">
+        <img src="images/shrujan 3.0 copyhggg.png" alt="Right Logo">
+      </div>
+
+      <!-- Center GIET Logo -->
+      <div class="top-giet-image">
+        <img src="images/giet.png" alt="GIET UNIVERSITY">
+      </div>
+
+      <!-- Below it: SHRUJAN '25 -->
+      <div class="top-name-image">
+        <img src="images/shrujan mob.png" alt="SHRUJAN '25">
+      </div>
+
+      <!-- Countdown Card with Text Overlay -->
+      <div class="countdown-card-container">
+        <div class="countdown-image">
+          <img src="images/card.svg" alt="Countdown Card">
+        </div>
+        
+        <!-- Website Live Text -->
+        <div class="website-live">Website Live In</div>
+
+        <!-- Countdown Overlay -->
+        <div class="countdown-overlay">
+          <div id="days" class="time-unit">
+            <span class="number">00</span><span class="label">DAYS</span>
+          </div>
+          <div id="hours" class="time-unit">
+            <span class="number">00</span><span class="label">HRS</span>
+          </div>
+          <div id="minutes" class="time-unit">
+            <span class="number">00</span><span class="label">MIN</span>
+          </div>
+          <div id="seconds" class="time-unit">
+            <span class="number">00</span><span class="label">SEC</span>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Bottom Decoration -->
+      <div class="bottom-image">
+        <img src="images/elements.png" alt="Bottom Decoration">
+      </div>
+    </header>
+  </div>
+
+  <script>
+    // Countdown Timer
+    function updateCountdown() {
+      const targetDate = new Date('2025-11-15T18:00:00').getTime();
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        document.querySelector('.countdown-overlay').innerHTML =
+          '<div class="time-unit"><span class="number">EVENT STARTED!</span></div>';
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.querySelector('#days .number').textContent = String(days).padStart(2, '0');
+      document.querySelector('#hours .number').textContent = String(hours).padStart(2, '0');
+      document.querySelector('#minutes .number').textContent = String(minutes).padStart(2, '0');
+      document.querySelector('#seconds .number').textContent = String(seconds).padStart(2, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Parallax Effect (disabled on mobile)
+    if (window.innerWidth > 600) {
+      document.addEventListener('mousemove', (e) => {
+        const moveX = (e.clientX - window.innerWidth / 2) / 50;
+        const moveY = (e.clientY - window.innerHeight / 2) / 50;
+
+        document.querySelector('.logo-left').style.transform =
+          `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+        document.querySelector('.logo-right').style.transform =
+          `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+        document.querySelector('.top-giet-image').style.transform =
+          `translate(calc(-50% + ${moveX * 0.8}px), ${moveY * 0.8}px)`;
+        document.querySelector('.top-name-image').style.transform =
+          `translate(calc(-50% + ${moveX * 1}px), ${moveY * 1}px)`;
+        // document.querySelector('.countdown-card-container').style.transform =
+        //   `translate(calc(-50% + ${moveX * 1.2}px), ${moveY * 1.2}px)`;
+        document.querySelector('.bottom-image').style.transform =
+          `translate(${moveX * 0.3}px, ${moveY * 0.3}px)`;
+      });
+    }
+  </script>
+</body>
+</html>
