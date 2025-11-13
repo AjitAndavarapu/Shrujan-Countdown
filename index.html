@@ -409,28 +409,68 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Parallax Effect (disabled on mobile)
-    if (window.innerWidth > 600) {
-      document.addEventListener('mousemove', (e) => {
-        const moveX = (e.clientX - window.innerWidth / 2) / 50;
-        const moveY = (e.clientY - window.innerHeight / 2) / 50;
+//     // Parallax Effect (disabled on mobile)
+//     if (window.innerWidth > 600) {
+//       document.addEventListener('mousemove', (e) => {
+//         const moveX = (e.clientX - window.innerWidth / 2) / 50;
+//         const moveY = (e.clientY - window.innerHeight / 2) / 50;
 
-        document.querySelector('.logo-left').style.transform =
-          `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
-        document.querySelector('.logo-right').style.transform =
-          `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
-        document.querySelector('.top-giet-image').style.transform =
-          `translate(calc(-50% + ${moveX * 0.8}px), ${moveY * 0.8}px)`;
-        document.querySelector('.top-name-image').style.transform =
-          `translate(calc(-50% + ${moveX * 1}px), ${moveY * 1}px)`;
-        // document.querySelector('.countdown-card-container').style.transform =
-        //   `translate(calc(-50% + ${moveX * 1.2}px), ${moveY * 1.2}px)`;
-        document.querySelector('.bottom-image').style.transform =
-          `translate(${moveX * 0.3}px, ${moveY * 0.3}px)`;
-      });
-    }
-    // Parallax for desktop (mouse)
+//         document.querySelector('.logo-left').style.transform =
+//           `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+//         document.querySelector('.logo-right').style.transform =
+//           `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+//         document.querySelector('.top-giet-image').style.transform =
+//           `translate(calc(-50% + ${moveX * 0.8}px), ${moveY * 0.8}px)`;
+//         document.querySelector('.top-name-image').style.transform =
+//           `translate(calc(-50% + ${moveX * 1}px), ${moveY * 1}px)`;
+//         // document.querySelector('.countdown-card-container').style.transform =
+//         //   `translate(calc(-50% + ${moveX * 1.2}px), ${moveY * 1.2}px)`;
+//         document.querySelector('.bottom-image').style.transform =
+//           `translate(${moveX * 0.3}px, ${moveY * 0.3}px)`;
+//       });
+//     }
+
+
+    
+//     // Parallax for desktop (mouse)
+// if (window.innerWidth > 600) {
+//   document.addEventListener('mousemove', (e) => {
+//     const moveX = (e.clientX - window.innerWidth / 2) / 50;
+//     const moveY = (e.clientY - window.innerHeight / 2) / 50;
+
+//     document.querySelector('.logo-left').style.transform =
+//       `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+//     document.querySelector('.logo-right').style.transform =
+//       `translate(${moveX * 0.5}px, ${moveY * 0.5}px)`;
+//     document.querySelector('.top-giet-image').style.transform =
+//       `translate(calc(-50% + ${moveX * 0.8}px), ${moveY * 0.8}px)`;
+//     document.querySelector('.top-name-image').style.transform =
+//       `translate(calc(-50% + ${moveX * 1}px), ${moveY * 1}px)`;
+//     document.querySelector('.bottom-image').style.transform =
+//       `translate(${moveX * 0.3}px, ${moveY * 0.3}px)`;
+//   });
+// } else {
+  // Parallax for mobile (device tilt)
+//   window.addEventListener('deviceorientation', (event) => {
+//     const tiltX = event.gamma / 2; // left/right tilt
+//     const tiltY = event.beta / 4;  // forward/backward tilt
+
+//     document.querySelector('.logo-left').style.transform =
+//       `translate(${tiltX * 0.5}px, ${tiltY * 0.5}px)`;
+//     document.querySelector('.logo-right').style.transform =
+//       `translate(${tiltX * 0.5}px, ${tiltY * 0.5}px)`;
+//     document.querySelector('.top-giet-image').style.transform =
+//       `translate(calc(-50% + ${tiltX * 0.8}px), ${tiltY * 0.8}px)`;
+//     document.querySelector('.top-name-image').style.transform =
+//       `translate(calc(-50% + ${tiltX * 1}px), ${tiltY * 1}px)`;
+//     document.querySelector('.bottom-image').style.transform =
+//       `translate(${tiltX * 0.3}px, ${tiltY * 0.3}px)`;
+//   });
+// }
+
+// 🌐 Parallax Effect
 if (window.innerWidth > 600) {
+  // Desktop (mouse-based parallax)
   document.addEventListener('mousemove', (e) => {
     const moveX = (e.clientX - window.innerWidth / 2) / 50;
     const moveY = (e.clientY - window.innerHeight / 2) / 50;
@@ -447,10 +487,29 @@ if (window.innerWidth > 600) {
       `translate(${moveX * 0.3}px, ${moveY * 0.3}px)`;
   });
 } else {
-  // Parallax for mobile (device tilt)
-  window.addEventListener('deviceorientation', (event) => {
-    const tiltX = event.gamma / 2; // left/right tilt
-    const tiltY = event.beta / 4;  // forward/backward tilt
+  // 📱 Mobile (tilt-based parallax)
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+
+    // For iOS devices — must ask user for permission
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleTilt);
+        } else {
+          console.log('Device orientation permission denied.');
+        }
+      })
+      .catch(console.error);
+
+  } else {
+    // For Android and other browsers
+    window.addEventListener('deviceorientation', handleTilt);
+  }
+
+  function handleTilt(event) {
+    const tiltX = event.gamma / 2; // left/right
+    const tiltY = event.beta / 4;  // forward/back
 
     document.querySelector('.logo-left').style.transform =
       `translate(${tiltX * 0.5}px, ${tiltY * 0.5}px)`;
@@ -462,8 +521,9 @@ if (window.innerWidth > 600) {
       `translate(calc(-50% + ${tiltX * 1}px), ${tiltY * 1}px)`;
     document.querySelector('.bottom-image').style.transform =
       `translate(${tiltX * 0.3}px, ${tiltY * 0.3}px)`;
-  });
+  }
 }
+
 
   </script>
 </body>
